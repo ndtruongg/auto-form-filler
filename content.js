@@ -1,4 +1,4 @@
-window.autoFillForm = (mode = "random") => {
+window.autoFillForm = async (mode = "random") => {
   const randomFrom = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const randomNumber = (length = 8) =>
     Array.from({ length }, () => Math.floor(Math.random() * 10)).join("");
@@ -90,7 +90,39 @@ window.autoFillForm = (mode = "random") => {
     };
   })();
 
-  const data = mode === "random" ? randomData : fixedData;
+  let data;
+  
+  if (mode === "random") {
+    data = randomData;
+  } else if (mode === "custom") {
+    // Get custom data from storage
+    const result = await chrome.storage.local.get(['customData']);
+    const customData = result.customData || {};
+    
+    // Map custom data to form fields
+    data = {
+      username: customData.name ? customData.name.toLowerCase().replace(/\s+/g, '') : "user",
+      firstName: customData.name ? customData.name.split(' ')[0] : "Tên",
+      lastName: customData.name ? customData.name.split(' ').slice(-1)[0] : "Họ",
+      name: customData.name || "Nguyễn Văn A",
+      password: "12345678",
+      rePassword: "12345678",
+      phone: customData.phone || "0901234567",
+      address: customData.address || "123 Đường ABC",
+      fax: "0241234567",
+      facebook: `https://facebook.com/${customData.name ? customData.name.toLowerCase().replace(/\s+/g, '') : 'user'}`,
+      email: customData.email || "example@email.com",
+      age: "25",
+      year: "1998",
+      birthday: "1998-01-01",
+      sex: "Nam",
+      company: customData.company || "Công ty ABC",
+      city: "Hà Nội",
+      district: "Ba Đình"
+    };
+  } else {
+    data = fixedData;
+  }
 
   // ====== Điền dữ liệu vào input ======
   const fillInput = (field, value) => {
