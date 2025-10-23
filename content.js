@@ -1,4 +1,4 @@
-((mode = "random") => {
+window.autoFillForm = (mode = "random") => {
   const randomFrom = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const randomNumber = (length = 8) =>
     Array.from({ length }, () => Math.floor(Math.random() * 10)).join("");
@@ -119,5 +119,5 @@
   Object.entries(data).forEach(([key, value]) => fillInput(key, value));
 
   console.table(data);
-  alert(`🎯 Đã tự động điền (${mode === "random" ? "Ngẫu nhiên" : "Cố định"})!`);
-})();
+  console.log(`🎯 Đã tự động điền (${mode === "random" ? "Ngẫu nhiên" : "Cố định"})!`);
+};
